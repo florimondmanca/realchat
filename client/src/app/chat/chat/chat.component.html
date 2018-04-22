@@ -1,0 +1,14 @@
+<p>
+  chat works!
+</p>
+
+<form (ngSubmit)="sendMessage()" novalidate>
+  <label for="message">Message</label>
+  <input type="text" name="message" placeholder="Write a message..." [(ngModel)]="messageContent">
+</form>
+
+<div class="">
+  <div *ngFor="let message of messages" >
+    {{ message }}
+  </div>
+</div>

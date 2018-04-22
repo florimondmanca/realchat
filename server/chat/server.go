@@ -11,6 +11,9 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
 // Server listens to events
@@ -55,28 +58,33 @@ func (server *Server) Listen() {
 		select {
 
 		case user := <-server.addUser:
-			log.Println("Added user", user, "to chat room")
+			log.Println("[ADD USER]", user)
 			server.connectedUsers[user.id] = user
-			log.Println(len(server.connectedUsers),
-				"are now connected to this chat room.")
+			server.logConnected()
 			server.sendPastMessages(user)
 
 		case user := <-server.removeUser:
-			log.Println("Removing user", user, "from chat room")
+			log.Println("[REMOVE USER]", user)
 			delete(server.connectedUsers, user.id)
+			server.logConnected()
 
 		case msg := <-server.newMessage:
+			log.Println("[RECEIVE MESSAGE]", msg)
 			server.Messages = append(server.Messages, msg)
 			server.sendAll(msg)
 
 		case err := <-server.errorCh:
-			log.Println("Error:", err)
+			log.Println("[ERROR]", err.Error())
 
 		case <-server.doneCh:
 			log.Println("Server stopping...")
 			return
 		}
 	}
+}
+
+func (server *Server) logConnected() {
+	log.Println(len(server.connectedUsers), "users now connected")
 }
 
 // Err seends an error to the server
@@ -112,22 +120,13 @@ func (server *Server) AddMessage(msg *Message) {
 }
 
 func (server *Server) handleChat(rw http.ResponseWriter, r *http.Request) {
-	conn, _ := upgrader.Upgrade(rw, r, nil)
-
-	var message Message
-	err := conn.ReadJSON(message)
-	log.Println("Message received:", &message)
+	conn, err := upgrader.Upgrade(rw, r, nil)
 	if err != nil {
-		log.Println("Error while reading message JSON:", err.Error())
+		server.Err(err)
+		return
 	}
-
 	user := NewUser(conn, server)
-
-	log.Println("Going to add user", user)
 	server.AddUser(user)
-
-	log.Println("User added successfully")
-	server.AddMessage(&message)
 	user.Listen()
 }
 

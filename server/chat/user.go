@@ -34,11 +34,6 @@ func NewUser(conn *websocket.Conn, server *Server) *User {
 	return &User{maxID, conn, server, ch, doneCh}
 }
 
-// Conn returns the user's websocket connection
-func (user *User) Conn() *websocket.Conn {
-	return user.conn
-}
-
 func (user *User) Write(message *Message) {
 	select {
 	case user.out <- message:
@@ -64,15 +59,16 @@ func (user *User) listenRead() {
 	for {
 		select {
 		case <-user.doneCh:
-			user.server.RemoveUser(user)
 			return
+
 		default:
 			// Read a message sent over the websocket
 			var message Message
 			err := user.conn.ReadJSON(&message)
 			if err != nil {
-				user.doneCh <- true
 				user.server.Err(err)
+				user.server.RemoveUser(user)
+				user.doneCh <- true
 			} else {
 				user.server.AddMessage(&message)
 			}

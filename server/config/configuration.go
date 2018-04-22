@@ -35,6 +35,9 @@ func load() Configuration {
 }
 
 func setupLog(configuration Configuration) {
+	if configuration.LogFilePath == "" {
+		return
+	}
 	logFile, err := os.Create(configuration.LogFilePath)
 	if err != nil {
 		fmt.Println(err)
