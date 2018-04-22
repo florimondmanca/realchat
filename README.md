@@ -1,4 +1,4 @@
-# Chat Room
+# Go Live Chat
 
 A simple real-time chat room backend made with Go and a websocket.
 
