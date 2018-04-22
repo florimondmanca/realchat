@@ -1,5 +1,5 @@
 export enum Action {
-  JOINED,
-  LEFT,
-  RENAME,
+  JOIN = 'join',
+  LEAVE = 'leave',
+  RENAME = 'rename',
 }

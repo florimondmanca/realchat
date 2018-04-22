@@ -1,29 +1,38 @@
 <div class="container">
   <h1>Chat room</h1>
 
-  <div *ngIf="!user">
-    <app-user-modal></app-user-modal>
-  </div>
-
-  <p *ngIf="user">
+  <p>
     Logged in as <strong>{{ user }}</strong> (<a href="#" (click)="logout()">Not you?</a>)
   </p>
 
   <div class="chat">
     <ul class="message-list" *ngIf="messages.length > 0; else empty">
-      <li *ngFor="let message of messages" class="message" [ngClass]="{'message-self': message.userName === user}">
-        <strong class="message-user">
-          {{ message.userName }}
-        </strong>
-        <span class="message-body">
-          {{ message.body }}
-        </span>
-        <em class="message-time">
-          <small>
-            {{ message.date | amDateFormat:"HH:mm" }}
-          </small>
-        </em>
-      </li>
+
+      <div *ngFor="let message of messages" [ngSwitch]="message.action" class="item">
+
+        <li *ngSwitchCase="Action.JOIN" class="notification">
+          <strong>{{ message.userName }}</strong> joined.
+        </li>
+
+        <li *ngSwitchCase="Action.LEAVE" class="notification">
+          <strong>{{ message.userName }}</strong> left.
+        </li>
+
+        <li *ngSwitchDefault class="message" [ngClass]="{'message-self': message.userName === user}">
+          <strong class="message-user">
+            {{ message.userName }}
+          </strong>
+          <span class="message-body">
+            {{ message.body }}
+          </span>
+          <em class="message-time">
+            <small>
+              {{ message.date | amDateFormat:"HH:mm" }}
+            </small>
+          </em>
+        </li>
+
+      </div>
     </ul>
     <ng-template #empty>
       <div class="empty">

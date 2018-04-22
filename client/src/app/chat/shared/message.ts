@@ -1,16 +1,21 @@
+import { Action } from './action';
+
 export class Message {
   userName?: string;
-  body?: string;
+  body?: any;
   timestamp?: string;
+  action?: Action;
 
   constructor(options?: {
     userName?: string,
-    body?: string,
-    timestamp?: string
+    body?: any,
+    timestamp?: string,
+    action?: Action,
   }) {
     this.userName = options.userName || '';
-    this.body = options.body || '';
+    this.body = options.body;
     this.timestamp = options.timestamp;
+    this.action = options.action;
   }
 
   get date(): Date {

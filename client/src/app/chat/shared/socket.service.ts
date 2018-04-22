@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Message } from './message';
-import { User } from './user';
 
 const SERVER_URL = 'ws://localhost:8080/chat';
 
@@ -25,6 +24,7 @@ export class SocketService {
   }
 
   send(message: Message) {
+    if (!message) return;
     this.socket.send(JSON.stringify(message));
   }
 

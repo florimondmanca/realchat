@@ -1,0 +1,17 @@
+@import 'variables';
+
+.container {
+  max-width: 30em;
+  height: 80vh;
+  margin: 0 auto;
+  padding: 0 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form {
+  padding: 1em 2em;
+  margin: auto 0;
+  text-align: center;
+}

@@ -1,0 +1,10 @@
+<div class="container">
+  <form class="login-form" (ngSubmit)="f.valid && enterChat()" #f="ngForm">
+    <h1>Chat Room</h1>
+    <h3>Welcome.</h3>
+    <p>
+      How should your chatmates call you?
+    </p>
+    <input type="text" name="userName" [(ngModel)]="userName" placeholder="Enter your username..." required>
+  </form>
+</div>

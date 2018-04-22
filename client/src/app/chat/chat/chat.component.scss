@@ -16,10 +16,55 @@
   list-style-type: none;
   margin: 0;
   padding: 1em 2em;
-  overflow-y: auto;
-  max-height: 60vh;
+  height: 60vh;
+  overflow: auto;
   display: flex;
-  flex-flow: column nowrap;
+  flex-direction: column-reverse;
+}
+
+.item {
+  & + .item {
+    margin-bottom: .5em;
+  }
+  .message {
+    width: fit-content;
+    padding: .5em 1em;
+    border-radius: 20px;
+    background: $color-gray-lightest;
+    margin: 0 0 0 auto;
+    display: grid;
+    grid-template-areas:
+    "user ."
+    "body time";
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto;
+    grid-column-gap: .5em;
+    .message-user {
+      grid-area: user;
+      color: $color-mild-blue;
+    }
+    .message-body {
+      grid-area: body;
+    }
+    .message-time {
+      grid-area: time;
+      color: transparentize($color-text, .7);
+    }
+    &.message-self {
+      background: $color-mild-blue;
+      color: white;
+      margin: 0 auto 0 0;
+      .message-user {
+        display: none;
+      }
+      .message-time {
+        color: transparentize(white, .5);
+      }
+    }
+  }
+  .notification {
+    text-align: center;
+  }
 }
 
 .empty {
@@ -30,48 +75,13 @@
   width: 100%;
 }
 
-.message {
-  border-radius: 20px;
-  background: $color-gray-lightest;
-  padding: .5em 1em;
-  margin: 0 0 0 auto;
-  & + .message {
-    margin-top: .5em;
-  }
-  display: grid;
-  grid-template-areas:
-    "user ."
-    "body time";
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto;
-  grid-column-gap: .5em;
-  .message-user {
-    grid-area: user;
-    color: $color-mild-blue;
-  }
-  .message-body {
-    grid-area: body;
-  }
-  .message-time {
-    grid-area: time;
-    color: transparentize($color-text, .7);
-  }
-  &.message-self {
-    background: $color-mild-blue;
-    color: white;
-    margin: 0 auto 0 0;
-    .message-user {
-      display: none;
-    }
-    .message-time {
-      color: transparentize(white, .5);
-    }
-  }
-}
-
 .message-entry {
   margin-top: auto;
-  padding: 1em 0;
+  input {
+    border: none;
+    border-radius: 0;
+    width: 100%;
+  }
   margin-left: 2em;
   margin-right: 2em;
   box-sizing: border-box;

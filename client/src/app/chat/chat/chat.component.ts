@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { UserService, SocketService, User, Message, Event } from '../shared';
+import { SocketService, Message, Event, Action } from '../shared';
+import { UserService } from 'app/shared';
 
 @Component({
   selector: 'app-chat',
@@ -13,31 +15,34 @@ export class ChatComponent implements OnInit, OnDestroy {
   conn: Subscription;
   messages: Message[] = [];
   message: string;
-  
+  Action = Action;
 
   constructor(
     private socketService: SocketService,
     private userService: UserService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
     this.initConnection();
-    this.userService.get().subscribe(
-      (user) => this.user = user === "null" ? null : user
-    );
+    this.user = this.userService.getSnapshot();
   }
 
   initConnection() {
     this.socketService.initSocket();
     this.conn = this.socketService.onMessage().subscribe(
-      (message: Message) => this.messages.push(message)
+      (message: Message) => this.messages.unshift(message)
     );
     this.socketService.onOpen().subscribe(
-      () => console.log('connected')
+      () => {
+        console.log('connected');
+        this.sendNotification({action: Action.JOIN});
+      }
     );
-
     this.socketService.onClose().subscribe(
-      () => console.log('disconnected')
+      () => {
+        console.log('disconnected');
+      }
     );
   }
 
@@ -51,8 +56,30 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.message = null;
   }
 
+  sendNotification(opt: {params?: any, action: Action}) {
+    let message: Message;
+    if (opt.action === Action.JOIN || opt.action === Action.LEAVE) {
+      message = new Message({
+        action: opt.action,
+        userName: this.user,
+      });
+    } else if (opt.action === Action.RENAME) {
+      message = new Message({
+        action: opt.action,
+        body: {
+          userName: this.user,
+          previousUserName: opt.params.previousUserName,
+        },
+      });
+    }
+    message.timestamp = (+ new Date()).toString();
+    this.socketService.send(message);
+  }
+
   logout() {
     this.userService.set(null);
+    this.sendNotification({action: Action.LEAVE});
+    this.router.navigate(['/']);
   }
 
   ngOnDestroy() {

@@ -10,6 +10,8 @@ export class UserService {
   private user$: BehaviorSubject<string> = new BehaviorSubject(
     sessionStorage.getItem(this.key)
   );
+  redirectUrl: string;
+  fromGuard: boolean = false;
 
   constructor() {
     this.user$.subscribe(user => sessionStorage.setItem(this.key, user));
@@ -21,5 +23,14 @@ export class UserService {
 
   get(): Observable<string> {
     return this.user$.asObservable();
+  }
+
+  get isSet(): boolean {
+    const user: string = this.getSnapshot();
+    return (user !== null) && (user !== "null");
+  }
+
+  getSnapshot(): string {
+    return this.user$.getValue();
   }
 }

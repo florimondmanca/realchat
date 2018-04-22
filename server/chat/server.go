@@ -33,7 +33,7 @@ func NewServer() *Server {
 	messages := []*Message{}
 	addUser := make(chan *User)
 	removeUser := make(chan *User)
-	incomingMessage := make(chan *Message)
+	newMessage := make(chan *Message)
 	errorCh := make(chan error)
 	doneCh := make(chan bool)
 	return &Server{
@@ -41,7 +41,7 @@ func NewServer() *Server {
 		messages,
 		addUser,
 		removeUser,
-		incomingMessage,
+		newMessage,
 		errorCh,
 		doneCh,
 	}
@@ -68,7 +68,7 @@ func (server *Server) Listen() {
 			server.logConnected()
 
 		case msg := <-server.newMessage:
-			log.Println("[RECEIVE MESSAGE]", msg)
+			log.Println("[MESSAGE]", msg)
 			server.Messages = append(server.Messages, msg)
 			server.sendAll(msg)
 

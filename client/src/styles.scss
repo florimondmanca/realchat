@@ -14,16 +14,18 @@ body {
 a {
   text-decoration: none;
   font-weight: bold;
-  color: $color-accent;
+  color: $color-mild-blue;
   &:visited {
-    color: $color-accent;
+    color: $color-mild-blue;
   }
 }
 
 input {
   margin: 0;
-  padding: 0;
-  border: none;
+  padding: 1em;
+  box-sizing: border-box;
+  border: 1px solid $color-gray-lightest;
+  border-radius: 10px;
   font-family: inherit;
   color: inherit;
   font-size: inherit;

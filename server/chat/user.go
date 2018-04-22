@@ -64,7 +64,7 @@ func (user *User) listenRead() {
 			return
 
 		default:
-			// Read a message sent over the websocket
+			// Read a message sent by user over websocket
 			var message Message
 			err := user.conn.ReadJSON(&message)
 			if err != nil {
