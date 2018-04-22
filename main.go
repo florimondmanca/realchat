@@ -4,19 +4,19 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
+	"os"
 
-	"github.com/florimondmanca/chatroom/server/chat"
-	"github.com/florimondmanca/chatroom/server/config"
+	"github.com/florimondmanca/go-live-chat/chat"
 )
 
-var configuration config.Configuration
 var serverHostName string
 
 func init() {
-	configuration = config.Load()
-	serverHostName = fmt.Sprintf("%s:%s",
-		configuration.Host, strconv.Itoa(configuration.Port))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	serverHostName = fmt.Sprintf(":%s", port)
 	log.Println("Host name:", serverHostName)
 }
 
