@@ -4,3 +4,6 @@ Thumbs.db
 
 # logs
 *.log
+
+# binaries
+go-live-chat
