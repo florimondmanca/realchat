@@ -1,1 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'variables';
+@import url('https://fonts.googleapis.com/css?family=Nunito:300,700');
+
+
+body {
+  font-family: 'Nunito', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 95vh;
+  color: $color-text;
+}
+
+a {
+  text-decoration: none;
+  font-weight: bold;
+  color: $color-accent;
+  &:visited {
+    color: $color-accent;
+  }
+}
+
+input {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-family: inherit;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  background: none;
+  &:focus {
+    outline: none;
+  }
+}

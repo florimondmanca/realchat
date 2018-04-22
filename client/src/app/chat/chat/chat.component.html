@@ -1,14 +1,39 @@
-<p>
-  chat works!
-</p>
+<div class="container">
+  <h1>Chat room</h1>
 
-<form (ngSubmit)="sendMessage()" novalidate>
-  <label for="message">Message</label>
-  <input type="text" name="message" placeholder="Write a message..." [(ngModel)]="messageContent">
-</form>
-
-<div class="">
-  <div *ngFor="let message of messages" >
-    {{ message }}
+  <div *ngIf="!user">
+    <app-user-modal></app-user-modal>
   </div>
+
+  <p *ngIf="user">
+    Logged in as <strong>{{ user }}</strong> (<a href="#" (click)="logout()">Not you?</a>)
+  </p>
+
+  <div class="chat">
+    <ul class="message-list" *ngIf="messages.length > 0; else empty">
+      <li *ngFor="let message of messages" class="message" [ngClass]="{'message-self': message.userName === user}">
+        <strong class="message-user">
+          {{ message.userName }}
+        </strong>
+        <span class="message-body">
+          {{ message.body }}
+        </span>
+        <em class="message-time">
+          <small>
+            {{ message.date | amDateFormat:"HH:mm" }}
+          </small>
+        </em>
+      </li>
+    </ul>
+    <ng-template #empty>
+      <div class="empty">
+        <small>No messages here yet.</small>
+      </div>
+    </ng-template>
+
+    <form class="message-entry" (ngSubmit)="sendMessage()" novalidate>
+      <input type="text" name="message" placeholder="Write a message..." [(ngModel)]="message" autocomplete="off" autofocus="true">
+    </form>
+  </div>
+
 </div>

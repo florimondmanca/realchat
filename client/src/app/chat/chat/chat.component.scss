@@ -1,0 +1,79 @@
+@import 'variables';
+
+.container {
+  max-width: 50em;
+  margin: 0 auto;
+  padding: 0 2em;
+}
+
+.chat {
+  box-shadow: 0 4px 2px 1px rgba(0, 0, 0, .06);
+  border: 1px solid lightgray;
+  border-radius: 5px;
+}
+
+.message-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 1em 2em;
+  overflow-y: auto;
+  max-height: 60vh;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.empty {
+  padding: 1em 2em;
+  margin: 0 auto;
+  color: $color-muted;
+  text-align: center;
+  width: 100%;
+}
+
+.message {
+  border-radius: 20px;
+  background: $color-gray-lightest;
+  padding: .5em 1em;
+  margin: 0 0 0 auto;
+  & + .message {
+    margin-top: .5em;
+  }
+  display: grid;
+  grid-template-areas:
+    "user ."
+    "body time";
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto;
+  grid-column-gap: .5em;
+  .message-user {
+    grid-area: user;
+    color: $color-mild-blue;
+  }
+  .message-body {
+    grid-area: body;
+  }
+  .message-time {
+    grid-area: time;
+    color: transparentize($color-text, .7);
+  }
+  &.message-self {
+    background: $color-mild-blue;
+    color: white;
+    margin: 0 auto 0 0;
+    .message-user {
+      display: none;
+    }
+    .message-time {
+      color: transparentize(white, .5);
+    }
+  }
+}
+
+.message-entry {
+  margin-top: auto;
+  padding: 1em 0;
+  margin-left: 2em;
+  margin-right: 2em;
+  box-sizing: border-box;
+  border-top: 1px solid $color-gray-lightest;
+}

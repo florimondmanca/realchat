@@ -49,9 +49,11 @@ func (user *User) Listen() {
 }
 
 func (user *User) listenWrite() {
-	select {
-	case msg := <-user.out:
-		user.conn.WriteJSON(&msg)
+	for {
+		select {
+		case msg := <-user.out:
+			user.conn.WriteJSON(&msg)
+		}
 	}
 }
 

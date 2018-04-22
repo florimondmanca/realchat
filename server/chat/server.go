@@ -56,7 +56,6 @@ func (server *Server) Listen() {
 
 	for {
 		select {
-
 		case user := <-server.addUser:
 			log.Println("[ADD USER]", user)
 			server.connectedUsers[user.id] = user

@@ -1,8 +1,12 @@
 <div class="wrapper">
   <div class="modal">
-    <form (ngSubmit)="enterChat()" novalidate>
-      <label for="userName">Who are you?</label>
-      <input type="text" name="userName" placeholder="Enter your username..." [(ngModel)]="userName">
+    <form (ngSubmit)="setUser()" novalidate>
+      <div>
+        <label for="userName">Who are you?</label>
+      </div>
+      <div>
+        <input type="text" name="userName" placeholder="Enter your username..." [(ngModel)]="userName" required autofocus>
+      </div>
     </form>
   </div>
 </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SocketService, User, Message, Event } from '../shared';
+import { UserService, SocketService, User, Message, Event } from '../shared';
 
 @Component({
   selector: 'app-chat',
@@ -12,21 +12,25 @@ export class ChatComponent implements OnInit, OnDestroy {
   user: string;
   conn: Subscription;
   messages: Message[] = [];
-  messageContent: string;
+  message: string;
+  
 
-  constructor(private socketService: SocketService) { }
+  constructor(
+    private socketService: SocketService,
+    private userService: UserService,
+  ) { }
 
   ngOnInit() {
     this.initConnection();
+    this.userService.get().subscribe(
+      (user) => this.user = user === "null" ? null : user
+    );
   }
 
   initConnection() {
     this.socketService.initSocket();
     this.conn = this.socketService.onMessage().subscribe(
-      (message: Message) => {
-        console.log(message);
-        this.messages.push(message);
-      }
+      (message: Message) => this.messages.push(message)
     );
     this.socketService.onOpen().subscribe(
       () => console.log('connected')
@@ -38,15 +42,17 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   sendMessage() {
-    if (!this.messageContent) {
-      return
-    }
-    this.socketService.send({
-      userName: this.user || "Anonymous",
-      body: this.messageContent,
-      timestamp: (+ new Date()).toString()
-    });
-    this.messageContent = null;
+    if (!this.message) return;
+    this.socketService.send(new Message({
+      userName: this.user,
+      body: this.message,
+      timestamp: (+ new Date()).toString(),
+    }));
+    this.message = null;
+  }
+
+  logout() {
+    this.userService.set(null);
   }
 
   ngOnDestroy() {

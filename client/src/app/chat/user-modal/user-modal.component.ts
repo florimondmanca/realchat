@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { UserService } from '../shared';
 
 @Component({
   selector: 'app-user-modal',
@@ -9,9 +10,13 @@ export class UserModalComponent implements OnInit {
 
   userName: string;
 
-  constructor() { }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
+  }
+
+  setUser() {
+    this.userService.set(this.userName);
   }
 
 }

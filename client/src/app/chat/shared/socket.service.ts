@@ -13,6 +13,7 @@ export class SocketService {
   initSocket() {
     console.log('Initializing socket connection...');
     this.socket = new WebSocket(SERVER_URL);
+    this.socket.onerror = (event) => console.log('Websocket error:' + event);
   }
 
   closeSocket() {
@@ -42,8 +43,10 @@ export class SocketService {
   onMessage(): Observable<Message> {
     return new Observable<Message>(observer => {
       this.socket.onmessage = (event) => {
-        const message: Message = JSON.parse(event.data);
-        observer.next(message);
+        if (typeof(event.data) === "string") {
+          const message: Message = new Message(JSON.parse(event.data));
+          observer.next(message);
+        }
       }
     });
   }
