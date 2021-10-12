@@ -84,7 +84,7 @@ func (s *Server) Listen() {
 		case msg := <-s.newMessage:
 			log.Println("[MESSAGE]", msg)
 			s.Messages = append(s.Messages, msg)
-			s.sendAll(msg)
+			s.notifyAll(msg)
 
 		case err := <-s.errorCh:
 			log.Println("[ERROR]", err.Error())
@@ -115,7 +115,7 @@ func (s *Server) sendPastMessages(user *User) {
 	}
 }
 
-func (s *Server) sendAll(msg *Message) {
+func (s *Server) notifyAll(msg *Message) {
 	for _, user := range s.connectedUsers {
 		user.Write(msg)
 	}

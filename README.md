@@ -2,13 +2,12 @@
 
 A web-based real-time chat room application made with Go, Svelte, and WebSocket.
 
-## Quickstart
-
-### Installation
+## Installation
 
 Prerequisites:
 
 * Install Go
+* Install Node.js and Yarn
 
 Then:
 
@@ -16,11 +15,21 @@ Then:
 $ make install
 ```
 
-### Run
+## Quickstart
+
+Run the backend server:
 
 ```console
-$ make run
+$ make serve
 ```
+
+Run the client dev server:
+
+```console
+$ make client-dev
+```
+
+For other available scripts, see `Makefile`.
 
 ## License
 

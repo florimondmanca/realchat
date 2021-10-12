@@ -46,9 +46,6 @@ type App struct {
 func NewApp() *App {
 	chat := chat.NewServer()
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "index.html")
-	})
 	http.HandleFunc("/chat", chat.HandleChat)
 	http.HandleFunc("/messages", chat.HandleMessages)
 

@@ -3,6 +3,7 @@ package chat
 import (
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -18,7 +19,8 @@ type User struct {
 
 const channelBufferSize = 100
 
-var maxID int
+var maxUserId int
+var maxMessageId int
 
 // NewUser builds a new user and returns it
 func NewUser(conn *websocket.Conn, server *Server) *User {
@@ -28,10 +30,10 @@ func NewUser(conn *websocket.Conn, server *Server) *User {
 	if server == nil {
 		panic("Server cannot be nil")
 	}
-	maxID++
+	maxUserId++
 	ch := make(chan *Message, channelBufferSize)
 	doneCh := make(chan bool)
-	return &User{maxID, conn, server, ch, doneCh}
+	return &User{maxUserId, conn, server, ch, doneCh}
 }
 
 func (user *User) Write(message *Message) {
@@ -64,13 +66,20 @@ func (user *User) listenRead() {
 			// Read a message sent by user over websocket
 			var message Message
 			err := user.conn.ReadJSON(&message)
+
 			if err != nil {
 				user.server.Err(err)
 				user.server.RemoveUser(user)
 				user.doneCh <- true
-			} else {
-				user.server.AddMessage(&message)
+				continue
 			}
+
+			message.Id = maxMessageId
+			maxMessageId++
+
+			message.TimestampSeconds = time.Now().Unix()
+
+			user.server.AddMessage(&message)
 		}
 	}
 }
