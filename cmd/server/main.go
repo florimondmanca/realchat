@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/florimondmanca/go-live-chat/internal/chat"
+	"github.com/florimondmanca/realchat/internal/chat"
 )
 
 var (

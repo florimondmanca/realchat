@@ -1,4 +1,4 @@
-module github.com/florimondmanca/go-live-chat
+module github.com/florimondmanca/realchat
 
 go 1.17
 
