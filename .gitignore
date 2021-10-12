@@ -1,9 +1,12 @@
-# System Files
-.DS_Store
-Thumbs.db
+### Go ###
 
-# logs
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+### Misc ###
+
+# Logs
 *.log
-
-# binaries
-go-live-chat

@@ -27,7 +27,7 @@ type Server struct {
 	doneCh         chan bool
 }
 
-// NewServer builds a server and returns it
+// NewServer builds a chat server and returns it
 func NewServer() *Server {
 	connectedUsers := make(map[int]*User)
 	messages := []*Message{}
@@ -47,65 +47,83 @@ func NewServer() *Server {
 	}
 }
 
-// Listen to events on the server
-func (server *Server) Listen() {
-	log.Println("Server listening...")
+// HandleChat handles new connections
+func (s *Server) HandleChat(rw http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(rw, r, nil)
+	if err != nil {
+		s.Err(err)
+		return
+	}
+	user := NewUser(conn, s)
+	s.AddUser(user)
+	user.Listen()
+}
 
-	http.HandleFunc("/chat", server.handleChat)
-	http.HandleFunc("/messages", server.handleMessages)
+// HandleMessages handles chat messages
+func (s *Server) HandleMessages(rw http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(rw).Encode(s)
+}
+
+// Listen to events on the server
+func (s *Server) Listen() {
+	log.Println("Server listening...")
 
 	for {
 		select {
-		case user := <-server.addUser:
+		case user := <-s.addUser:
 			log.Println("[ADD USER]", user)
-			server.connectedUsers[user.id] = user
-			server.logConnected()
-			server.sendPastMessages(user)
+			s.connectedUsers[user.id] = user
+			s.logConnected()
+			s.sendPastMessages(user)
 
-		case user := <-server.removeUser:
+		case user := <-s.removeUser:
 			log.Println("[REMOVE USER]", user)
-			delete(server.connectedUsers, user.id)
-			server.logConnected()
+			delete(s.connectedUsers, user.id)
+			s.logConnected()
 
-		case msg := <-server.newMessage:
+		case msg := <-s.newMessage:
 			log.Println("[MESSAGE]", msg)
-			server.Messages = append(server.Messages, msg)
-			server.sendAll(msg)
+			s.Messages = append(s.Messages, msg)
+			s.sendAll(msg)
 
-		case err := <-server.errorCh:
+		case err := <-s.errorCh:
 			log.Println("[ERROR]", err.Error())
 
-		case <-server.doneCh:
-			log.Println("Server stopping...")
+		case <-s.doneCh:
 			return
 		}
 	}
 }
 
-func (server *Server) logConnected() {
-	log.Println(len(server.connectedUsers), "users now connected")
+// Stop stops the chat server
+func (s *Server) Stop() {
+	close(s.doneCh)
+}
+
+func (s *Server) logConnected() {
+	log.Println(len(s.connectedUsers), "users now connected")
 }
 
 // Err seends an error to the server
-func (server *Server) Err(err error) {
-	server.errorCh <- err
+func (s *Server) Err(err error) {
+	s.errorCh <- err
 }
 
-func (server *Server) sendPastMessages(user *User) {
-	for _, msg := range server.Messages {
+func (s *Server) sendPastMessages(user *User) {
+	for _, msg := range s.Messages {
 		user.Write(msg)
 	}
 }
 
-func (server *Server) sendAll(msg *Message) {
-	for _, user := range server.connectedUsers {
+func (s *Server) sendAll(msg *Message) {
+	for _, user := range s.connectedUsers {
 		user.Write(msg)
 	}
 }
 
 // AddUser registers a user for addition to list of connected users
-func (server *Server) AddUser(user *User) {
-	server.addUser <- user
+func (s *Server) AddUser(user *User) {
+	s.addUser <- user
 }
 
 // RemoveUser registers a user for removal to list of connected users
@@ -116,19 +134,4 @@ func (server *Server) RemoveUser(user *User) {
 // AddMessage registers a new incoming message on the server
 func (server *Server) AddMessage(msg *Message) {
 	server.newMessage <- msg
-}
-
-func (server *Server) handleChat(rw http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(rw, r, nil)
-	if err != nil {
-		server.Err(err)
-		return
-	}
-	user := NewUser(conn, server)
-	server.AddUser(user)
-	user.Listen()
-}
-
-func (server *Server) handleMessages(rw http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(rw).Encode(server)
 }
