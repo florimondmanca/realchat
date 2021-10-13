@@ -1,13 +1,8 @@
 <script lang="ts">
-  import type { Message } from "../models";
-  import { webSocketService } from "../services/websocket";
+  import type { Message } from "../models/message";
   import MessageItem from "./MessageItem.svelte";
 
-  let messages: Message[] = [];
-
-  webSocketService.onMessage((message) => {
-    messages = [...messages, message];
-  });
+  export let messages: Message[];
 </script>
 
 {#if messages.length > 0}

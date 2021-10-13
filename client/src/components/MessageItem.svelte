@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Message, Action } from "../models";
+  import { Action } from "../models/action";
+  import type { Message } from "../models/message";
 
   export let message: Message;
   const user = "John Doe"; // TODO: store

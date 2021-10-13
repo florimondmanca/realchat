@@ -1,12 +1,14 @@
 <script lang="ts">
-  import { user } from "../stores/auth";
-  import { webSocketService } from "../services/websocket";
+  import { createEventDispatcher } from "svelte";
+  import type { ISendDetail } from "../models/message";
 
   let body = "";
 
+  const dispatch = createEventDispatcher<{ send: ISendDetail }>();
+
   const onSubmit = () => {
     if (!body) return;
-    webSocketService.send($user, body);
+    dispatch("send", { body });
     body = "";
   };
 </script>
