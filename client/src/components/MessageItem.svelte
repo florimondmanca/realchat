@@ -15,30 +15,48 @@
   </li>
 {:else}
   <li class="message" class:message-self={message.data.userName === $user}>
-    <strong class="message-user">
-      {message.data.userName}
-    </strong>
+    <div>
+      <strong class="message-user">
+        {message.data.userName}
+      </strong>
+    </div>
     <span class="message-body">
       {message.data.body}
     </span>
-    <em class="message-time">
+    <div class="message-time">
       <small>
         {new Date(message.timestampSeconds * 1000).toLocaleString()}
       </small>
-    </em>
+    </div>
   </li>
 {/if}
 
 <style>
   .notification {
-    /* TODO */
+    text-align: center;
   }
 
   .message {
-    /* TODO */
+    background-color: #ddd;
+    border-radius: 0.4em;
+    padding: 0.6em 1em;
+    width: fit-content;
+    width: -moz-fit-content;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-right: auto;
+  }
+
+  .message-time {
+    font-style: italic;
+    float: right;
+    margin-left: 2em;
+    margin-bottom: -2em;
   }
 
   .message-self {
-    /* TODO */
+    background-color: #bdf;
+    margin-left: auto;
+    margin-right: 0;
   }
 </style>

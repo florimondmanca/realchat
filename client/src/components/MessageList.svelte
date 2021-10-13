@@ -6,7 +6,7 @@
 </script>
 
 {#if messages.length > 0}
-  <ul class="message-list">
+  <ul>
     {#each messages as message (message.id)}
       <MessageItem {message} />
     {/each}
@@ -16,3 +16,13 @@
     <small>No messages here yet.</small>
   </div>
 {/if}
+
+<style>
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    max-height: 20em;
+    overflow-y: auto;
+  }
+</style>

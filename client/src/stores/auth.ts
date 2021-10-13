@@ -1,13 +1,13 @@
 import { derived, writable } from "svelte/store";
 
-const _storedUser = localStorage.getItem("user");
+const _storedUser = sessionStorage.getItem("user");
 export const user = writable<string>(_storedUser ? _storedUser : null);
 
 user.subscribe((value) => {
   if (value === null) {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
   } else {
-    localStorage.setItem("user", value);
+    sessionStorage.setItem("user", value);
   }
 });
 

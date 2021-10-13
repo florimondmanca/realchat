@@ -19,7 +19,13 @@
   };
 </script>
 
-<div>
+<div class="chat">
   <MessageList messages={$messages} />
   <MessageForm on:send={onSend} />
 </div>
+
+<style>
+  .chat {
+    max-width: 30em;
+  }
+</style>
