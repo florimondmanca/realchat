@@ -1,31 +1,32 @@
 import { EventEmitter } from "events";
 import type { Message } from "../models";
 
-class SocketService {
-  private socket: WebSocket;
+class WebSocketService {
+  private ws: WebSocket = null;
   private events = new EventEmitter();
 
   constructor() {}
 
   public init(): void {
-    this.socket = new WebSocket("ws://localhost:8080/chat");
-    this.socket.onerror = (event: any) =>
-      console.log("Websocket error:" + event);
+    this.ws = new WebSocket("ws://localhost:8080/chat");
+    this.ws.onerror = (event: any) => {
+      console.error("Websocket error:" + event);
+    };
     this.events.emit("ready");
   }
 
   public close(): void {
-    if (!this.socket) {
+    if (!this.ws) {
       return;
     }
     console.log("Closing socket connection...");
-    this.socket.close();
-    this.socket = null;
+    this.ws.close();
+    this.ws = null;
   }
 
   public send(userName: string, body: string) {
     const payload = { userName, body };
-    this.socket.send(JSON.stringify(payload));
+    this.ws.send(JSON.stringify(payload));
   }
 
   private ready$(): Promise<void> {
@@ -36,7 +37,7 @@ class SocketService {
 
   public onMessage(cb: (message: Message) => void) {
     this.ready$().then(() => {
-      this.socket.onmessage = (event) => {
+      this.ws.onmessage = (event) => {
         if (typeof event.data === "string") {
           const message: Message = JSON.parse(event.data);
           cb(message);
@@ -46,4 +47,4 @@ class SocketService {
   }
 }
 
-export const socketService = new SocketService();
+export const webSocketService = new WebSocketService();

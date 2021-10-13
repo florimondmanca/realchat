@@ -1,13 +1,13 @@
 <script lang="ts">
-  const user = "John Doe"; // TODO: store
+  import { user } from "../services/stores";
 
-  const logout = (event: Event) => {
-    console.log(`logout: ${event}`);
+  const logout = () => {
+    user.set(null);
   };
 </script>
 
 <p>
-  Logged in as <strong>{user}</strong> (<a
+  Logged in as <strong>{$user}</strong> (<a
     href="/"
     on:click|preventDefault={logout}>Not you?</a
   >)

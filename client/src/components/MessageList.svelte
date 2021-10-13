@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { Message } from "../models";
-  import { socketService } from "../services/socket";
+  import { webSocketService } from "../services/websocket";
   import MessageItem from "./MessageItem.svelte";
 
   let messages: Message[] = [];
 
-  socketService.onMessage((message) => {
+  webSocketService.onMessage((message) => {
     messages = [...messages, message];
   });
 </script>

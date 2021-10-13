@@ -1,46 +1,27 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { user } from "./services/stores";
   import AccountBar from "./components/AccountBar.svelte";
-  import MessageForm from "./components/MessageForm.svelte";
-  import MessageList from "./components/MessageList.svelte";
-  import { socketService } from "./services/socket";
-
-  onMount(() => {
-    socketService.init();
-
-    return () => socketService.close();
-  });
+  import Chat from "./views/Chat.svelte";
+  import Login from "./views/Login.svelte";
 </script>
 
 <main>
-  <h1>Chat room</h1>
+  <h1>RealChat</h1>
 
-  <AccountBar />
-
-  <div class="chat">
-    <MessageList />
-    <MessageForm />
-  </div>
+  {#if $user == null}
+    <Login />
+  {:else}
+    <AccountBar />
+    <Chat />
+  {/if}
 </main>
 
 <style>
   main {
-    text-align: center;
-    padding: 1em;
-    max-width: 240px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    padding: 3em;
     margin: 0 auto;
-  }
-
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
-  }
-
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
   }
 </style>
