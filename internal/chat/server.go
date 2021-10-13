@@ -54,7 +54,13 @@ func (s *Server) HandleChat(rw http.ResponseWriter, r *http.Request) {
 		s.Err(err)
 		return
 	}
-	user := NewUser(conn, s)
+
+	user, err := NewUser(conn, s)
+	if err != nil {
+		s.Err(err)
+		return
+	}
+
 	s.AddUser(user)
 	user.Listen()
 }
@@ -124,11 +130,13 @@ func (s *Server) notifyAll(msg *Message) {
 // AddUser registers a user for addition to list of connected users
 func (s *Server) AddUser(user *User) {
 	s.addUser <- user
+	s.AddMessage(NewJoinMessage(user.name))
 }
 
 // RemoveUser registers a user for removal to list of connected users
 func (server *Server) RemoveUser(user *User) {
 	server.removeUser <- user
+	server.AddMessage(NewLeaveMessage(user.name))
 }
 
 // AddMessage registers a new incoming message on the server

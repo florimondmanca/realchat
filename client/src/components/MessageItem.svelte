@@ -1,26 +1,25 @@
 <script lang="ts">
-  import { Action } from "../models/action";
   import type { Message } from "../models/message";
+  import { user } from "../stores/auth";
 
   export let message: Message;
-  const user = "John Doe"; // TODO: store
 </script>
 
-{#if message.action === Action.JOIN}
+{#if message.type === "JOIN"}
   <li class="notification">
-    <strong>{message.userName}</strong> joined.
+    <strong>{message.data.userName}</strong> joined.
   </li>
-{:else if message.action === Action.LEAVE}
+{:else if message.type === "LEAVE"}
   <li class="notification">
-    <strong>{message.userName}</strong> left.
+    <strong>{message.data.userName}</strong> left.
   </li>
 {:else}
-  <li class="message" class:message-self={message.userName === user}>
+  <li class="message" class:message-self={message.data.userName === $user}>
     <strong class="message-user">
-      {message.userName}
+      {message.data.userName}
     </strong>
     <span class="message-body">
-      {message.body}
+      {message.data.body}
     </span>
     <em class="message-time">
       <small>

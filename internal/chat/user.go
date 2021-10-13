@@ -3,7 +3,6 @@ package chat
 import (
 	"log"
 	"strconv"
-	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -11,6 +10,7 @@ import (
 // User represents a chat room user
 type User struct {
 	id     int
+	name   string
 	conn   *websocket.Conn
 	server *Server
 	out    chan *Message
@@ -20,20 +20,35 @@ type User struct {
 const channelBufferSize = 100
 
 var maxUserId int
-var maxMessageId int
+
+type ClientHelloData struct {
+	UserName string `json:"userName"`
+}
 
 // NewUser builds a new user and returns it
-func NewUser(conn *websocket.Conn, server *Server) *User {
+func NewUser(conn *websocket.Conn, server *Server) (*User, error) {
 	if conn == nil {
 		panic("Connection cannot be nil")
 	}
 	if server == nil {
 		panic("Server cannot be nil")
 	}
+
+	id := maxUserId
 	maxUserId++
+
+	// Receive initial client payload with user info.
+	var data ClientHelloData
+	err := conn.ReadJSON(&data)
+	if err != nil {
+		return nil, err
+	}
+	name := data.UserName
+
 	ch := make(chan *Message, channelBufferSize)
 	doneCh := make(chan bool)
-	return &User{maxUserId, conn, server, ch, doneCh}
+
+	return &User{id, name, conn, server, ch, doneCh}, nil
 }
 
 func (user *User) Write(message *Message) {
@@ -64,8 +79,8 @@ func (user *User) listenRead() {
 
 		default:
 			// Read a message sent by user over websocket
-			var message Message
-			err := user.conn.ReadJSON(&message)
+			var data ChatMessageData
+			err := user.conn.ReadJSON(&data)
 
 			if err != nil {
 				user.server.Err(err)
@@ -74,12 +89,9 @@ func (user *User) listenRead() {
 				continue
 			}
 
-			message.Id = maxMessageId
-			maxMessageId++
+			m := NewChatMessage(data.UserName, data.Body)
 
-			message.TimestampSeconds = time.Now().Unix()
-
-			user.server.AddMessage(&message)
+			user.server.AddMessage(m)
 		}
 	}
 }

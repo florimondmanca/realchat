@@ -3,16 +3,25 @@ class WebSocketService {
 
   constructor() {}
 
-  public connect(path: string, handler: (data: string) => void): void {
+  public async connect(
+    path: string,
+    handler: (data: string) => void
+  ): Promise<void> {
     this.ws = new WebSocket(`ws://localhost:8080${path}`);
+
     this.ws.onmessage = (event) => {
       if (typeof event.data === "string") {
         handler(event.data);
       }
     };
+
     this.ws.onerror = (event: any) => {
       console.error("Websocket error:" + event);
     };
+
+    return new Promise((resolve) => {
+      this.ws.onopen = () => resolve();
+    });
   }
 
   public close(): void {

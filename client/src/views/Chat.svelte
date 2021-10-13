@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import type { ISendDetail } from "../models/message";
   import { user } from "../stores/auth";
   import { messages } from "../stores/messages";
@@ -7,10 +7,11 @@
   import MessageForm from "../components/MessageForm.svelte";
   import MessageList from "../components/MessageList.svelte";
 
-  onMount(() => {
-    messageService.init();
-    return () => messageService.tearDown();
+  onMount(async () => {
+    await messageService.init($user);
   });
+
+  onDestroy(() => messageService.tearDown());
 
   const onSend = (event: CustomEvent<ISendDetail>) => {
     const { body } = event.detail;
