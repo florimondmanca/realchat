@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { user } from "./services/stores";
+  import { isLoggedIn } from "./stores/auth";
   import AccountBar from "./components/AccountBar.svelte";
   import Chat from "./views/Chat.svelte";
   import Login from "./views/Login.svelte";
@@ -8,11 +8,11 @@
 <main>
   <h1>RealChat</h1>
 
-  {#if $user == null}
-    <Login />
-  {:else}
+  {#if $isLoggedIn}
     <AccountBar />
     <Chat />
+  {:else}
+    <Login />
   {/if}
 </main>
 

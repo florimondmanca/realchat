@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { user } from "../services/stores";
+  import { user } from "../stores/auth";
   import { webSocketService } from "../services/websocket";
 
   let body = "";

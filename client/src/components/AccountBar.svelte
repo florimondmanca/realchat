@@ -1,9 +1,5 @@
 <script lang="ts">
-  import { user } from "../services/stores";
-
-  const logout = () => {
-    user.set(null);
-  };
+  import { user, logout } from "../stores/auth";
 </script>
 
 <p>
