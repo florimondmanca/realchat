@@ -1,70 +1,92 @@
 :root {
-	--color-primary: #127475;
-	--color-surface: #dddddd;
-	--color-background: #F7F8F8;
-	--text-on-surface: #333333;
-	--text-on-primary: #F7F8F8;
-	--link-on-primary: #F7F8F8;
-	--link-on-surface: #0064c8;
+  /* Colors */
+  --white: #f7f8f8;
+  --color-primary: #390261;
+  --color-accent: #e99e14;
+  --color-surface: #dddddd;
+  --color-background: #f7f8f8;
+  --text-on-surface: #333333;
+  --text-on-primary: #f7f8f8;
+  --link-on-primary: #f7f8f8;
+  --link-on-surface: #0064c8;
+
+  /* CSS toggles */
+  --toggle-width: 64px;
+  --toggle-height: 32px;
+  --toggle-padding: 4px;
 }
 
-html, body {
-	padding: 0;
-	margin: 0;
+html[data-theme="dark"] {
+  /* Colors */
+  --color-background: #212a2e;
+  --color-accent: #eeac1e;
+  --color-surface: #2e3a3f;
+  --text-on-surface: #f7f8f8;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
 }
 
 body {
-	color: var(--text-on-surface);
-	box-sizing: border-box;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  color: var(--text-on-surface);
+  background-color: var(--color-background);
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
 a {
-	color: var(--color-link);
-	text-decoration: none;
+  color: var(--color-link);
+  text-decoration: none;
 }
 
 a:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 a:visited {
-	color: rgb(0,80,160);
+  color: rgb(0, 80, 160);
 }
 
 label {
-	display: block;
+  display: block;
 }
 
-input, button, select, textarea {
-	font-family: inherit;
-	font-size: inherit;
-	-webkit-padding: 0.4em 0;
-	padding: 0.4em;
-	margin: 0 0 0.5em 0;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 2px;
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  -webkit-padding: 0.4em 0;
+  padding: 0.4em;
+  margin: 0 0 0.5em 0;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 2px;
 }
 
 input:disabled {
-	color: #ccc;
+  color: #ccc;
 }
 
 button {
-	color: #333;
-	background-color: #f4f4f4;
-	outline: none;
+  color: #333;
+  background-color: #f4f4f4;
+  outline: none;
 }
 
 button:disabled {
-	color: #999;
+  color: #999;
 }
 
 button:not(:disabled):active {
-	background-color: #ddd;
+  background-color: #ddd;
 }
 
 button:focus {
-	border-color: #666;
+  border-color: #666;
 }
