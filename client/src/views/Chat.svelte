@@ -19,13 +19,17 @@
   };
 </script>
 
-<div class="chat">
+<main>
   <MessageList messages={$messages} />
   <MessageForm on:send={onSend} />
-</div>
+</main>
 
 <style>
-  .chat {
+  main {
+    display: flex;
+    flex-flow: column;
+    padding: 0 3em;
+    margin: 0 auto;
     max-width: 30em;
   }
 </style>

@@ -4,17 +4,29 @@
   let user = "";
 </script>
 
-<h3>Welcome!</h3>
-<p>How should your chatmates call you?</p>
+<main>
+  <h1>RealChat</h1>
 
-<form on:submit|preventDefault={() => signIn(user)}>
-  <label for="user">Username</label>
-  <input
-    type="text"
-    name="user"
-    bind:value={user}
-    placeholder="Enter your username..."
-    required
-  />
-  <button type="submit">Enter chat</button>
-</form>
+  <h3>Welcome!</h3>
+  <p>How should your chatmates call you?</p>
+
+  <form on:submit|preventDefault={() => signIn(user)}>
+    <label for="user">Username</label>
+    <input
+      type="text"
+      name="user"
+      bind:value={user}
+      placeholder="Enter your username..."
+      required
+    />
+    <button type="submit">Enter chat</button>
+  </form>
+</main>
+
+<style>
+  main {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+  }
+</style>
