@@ -22,7 +22,5 @@
     list-style-type: none;
     padding: 0;
     margin: 0;
-    max-height: 20em;
-    overflow-y: auto;
   }
 </style>

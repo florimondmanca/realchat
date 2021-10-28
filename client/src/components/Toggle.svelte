@@ -27,7 +27,6 @@
     margin: 0;
     border: solid 1px var(--text-on-primary);
     border-radius: calc(var(--toggle-width) / 2);
-    cursor: pointer;
     color: var(--color-accent);
     background-color: var(--color-surface);
   }

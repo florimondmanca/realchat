@@ -33,11 +33,13 @@
 
 <style>
   .notification {
+    filter: contrast(20%);
     text-align: center;
+    font-style: italic;
   }
 
   .message {
-    background-color: #ddd;
+    background-color: var(--color-surface);
     border-radius: 0.4em;
     padding: 0.6em 1em;
     width: fit-content;
@@ -55,7 +57,7 @@
   }
 
   .message-self {
-    background-color: #bdf;
+    background-color: var(--color-primary);
     margin-left: auto;
     margin-right: 0;
   }

@@ -7,6 +7,7 @@
   --color-background: #f7f8f8;
   --text-on-surface: #333333;
   --text-on-primary: #f7f8f8;
+  --text-on-accent: #333333;
   --link-on-primary: #f7f8f8;
   --link-on-surface: #0064c8;
 
@@ -51,6 +52,10 @@ a:visited {
   color: rgb(0, 80, 160);
 }
 
+hr {
+  border: 1px solid var(--color-surface);
+}
+
 label {
   display: block;
 }
@@ -62,29 +67,51 @@ textarea {
   font-family: inherit;
   font-size: inherit;
   -webkit-padding: 0.4em 0;
-  padding: 0.4em;
+  padding: 0.6em 0.8em;
   margin: 0 0 0.5em 0;
   box-sizing: border-box;
   border: 1px solid #ccc;
-  border-radius: 2px;
+  border-radius: 6px;
+}
+
+input,
+select,
+textarea {
+  border: 1px solid var(--color-surface);
+}
+
+.form-field {
+  margin: 1em 0;
+}
+
+input {
+  width: 100%;
 }
 
 input:disabled {
   color: #ccc;
 }
 
+label {
+  filter: contrast(50%);
+  margin-bottom: 0.5em;
+}
+
 button {
-  color: #333;
-  background-color: #f4f4f4;
+  background-color: var(--color-primary);
+  color: var(--text-on-primary);
   outline: none;
+  border: none;
+  cursor: pointer;
 }
 
 button:disabled {
-  color: #999;
+  filter: contrast(50%);
+  cursor: not-allowed;
 }
 
 button:not(:disabled):active {
-  background-color: #ddd;
+  background-color: var(--color-primary);
 }
 
 button:focus {

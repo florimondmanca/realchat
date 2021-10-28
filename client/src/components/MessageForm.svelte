@@ -13,7 +13,7 @@
   };
 </script>
 
-<form class="message-entry" on:submit|preventDefault={onSubmit}>
+<form on:submit|preventDefault={onSubmit}>
   <input
     type="text"
     name="body"

@@ -2,31 +2,33 @@
   import { signIn } from "../stores/auth";
 
   let user = "";
+  let isValid = false;
+  $: isValid = !!user;
 </script>
 
 <main>
-  <h1>RealChat</h1>
+  <h1>Log in</h1>
 
-  <h3>Welcome!</h3>
-  <p>How should your chatmates call you?</p>
+  <hr />
 
   <form on:submit|preventDefault={() => signIn(user)}>
-    <label for="user">Username</label>
-    <input
-      type="text"
-      name="user"
-      bind:value={user}
-      placeholder="Enter your username..."
-      required
-    />
-    <button type="submit">Enter chat</button>
+    <div class="form-field">
+      <label for="user">Username</label>
+      <input
+        type="text"
+        name="user"
+        bind:value={user}
+        placeholder="Enter your username..."
+        required
+      />
+    </div>
+    <button type="submit" disabled={!isValid}>Enter chat</button>
   </form>
 </main>
 
 <style>
   main {
-    display: flex;
-    flex-flow: column;
-    align-items: center;
+    max-width: 20em;
+    margin: 4em auto;
   }
 </style>

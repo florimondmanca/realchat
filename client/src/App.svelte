@@ -14,4 +14,4 @@
   <Login />
 {/if}
 
-<Footer />
+<!-- <Footer /> -->

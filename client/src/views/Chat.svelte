@@ -1,35 +1,30 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-  import type { ISendDetail } from "../models/message";
-  import { user } from "../stores/auth";
-  import { messages } from "../stores/messages";
-  import { messageService } from "../services/messages";
-  import MessageForm from "../components/MessageForm.svelte";
-  import MessageList from "../components/MessageList.svelte";
-
-  onMount(async () => {
-    await messageService.init($user);
-  });
-
-  onDestroy(() => messageService.tearDown());
-
-  const onSend = (event: CustomEvent<ISendDetail>) => {
-    const { body } = event.detail;
-    messageService.send({ userName: $user, body });
-  };
+  import ChannelList from "../components/ChannelList.svelte";
+  import MessageBox from "../components/MessageBox.svelte";
 </script>
 
-<main>
-  <MessageList messages={$messages} />
-  <MessageForm on:send={onSend} />
-</main>
+<div class="chat">
+  <section>
+    <h3>Channels</h3>
+    <hr />
+    <ChannelList />
+  </section>
+  <section>
+    <h3>Messages</h3>
+    <hr />
+    <MessageBox />
+  </section>
+  <section>
+    <h3>Members</h3>
+    <hr />
+  </section>
+</div>
 
 <style>
-  main {
-    display: flex;
-    flex-flow: column;
+  .chat {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    column-gap: 1em;
     padding: 0 3em;
-    margin: 0 auto;
-    max-width: 30em;
   }
 </style>
