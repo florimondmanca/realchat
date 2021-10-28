@@ -1,19 +1,15 @@
-<ul>
-  <li>general</li>
-</ul>
+<script>
+  import List from "./List.svelte";
+  import ListItem from "./ListItem.svelte";
 
-<style>
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
+  const channels = ["general", "random"];
+  const selected = "general";
+</script>
 
-  li {
-    font-weight: bold;
-  }
-
-  li::before {
-    content: "#";
-  }
-</style>
+<List>
+  {#each channels as channel}
+    <ListItem tag="button" selected={channel === selected}>
+      #&nbsp;{channel}
+    </ListItem>
+  {/each}
+</List>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import ChannelList from "../components/ChannelList.svelte";
+  import MemberList from "../components/MemberList.svelte";
   import MessageBox from "../components/MessageBox.svelte";
 </script>
 
@@ -17,6 +18,7 @@
   <section>
     <h3>Members</h3>
     <hr />
+    <MemberList />
   </section>
 </div>
 

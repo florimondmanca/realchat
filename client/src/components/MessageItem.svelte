@@ -5,15 +5,7 @@
   export let message: Message;
 </script>
 
-{#if message.type === "JOIN"}
-  <li class="notification">
-    <strong>{message.data.userName}</strong> joined.
-  </li>
-{:else if message.type === "LEAVE"}
-  <li class="notification">
-    <strong>{message.data.userName}</strong> left.
-  </li>
-{:else}
+{#if message.type === "CHAT"}
   <li class="message" class:message-self={message.data.userName === $user}>
     <div>
       <strong class="message-user">
@@ -32,12 +24,6 @@
 {/if}
 
 <style>
-  .notification {
-    filter: contrast(20%);
-    text-align: center;
-    font-style: italic;
-  }
-
   .message {
     background-color: var(--color-surface);
     border-radius: 0.4em;
@@ -58,6 +44,7 @@
 
   .message-self {
     background-color: var(--color-primary);
+    color: var(--text-on-primary);
     margin-left: auto;
     margin-right: 0;
   }
