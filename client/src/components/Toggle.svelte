@@ -1,10 +1,12 @@
 <script lang="ts">
   import { flip } from "svelte/animate";
 
+  let className = "";
+  export { className as class };
   export let enabled: boolean;
 </script>
 
-<button on:click>
+<button on:click class={className}>
   {#each [true] as state (state)}
     <span
       class={state === enabled ? "thumb thumb-on" : "thumb thumb-off"}
@@ -27,7 +29,7 @@
     margin: 0;
     border: solid 1px var(--text-on-primary);
     border-radius: calc(var(--toggle-width) / 2);
-    color: var(--color-accent);
+    /* color: var(--color-toggle-icon); */
     background-color: var(--color-surface);
   }
 

@@ -21,7 +21,7 @@
     placeholder="Write a message..."
     autocomplete="off"
   />
-  <button type="submit">Send</button>
+  <button type="submit" disabled={!body}>Send</button>
 </form>
 
 <style>

@@ -44,19 +44,20 @@
   .box {
     display: flex;
     flex-flow: column;
-    padding: 0 3em;
-    margin: 0 auto;
   }
 
   .history {
     position: relative;
     height: 70vh;
     overflow-y: scroll;
+    padding: 0 1.5em; /* Leave space for handlebar */
   }
 
   .form {
     position: sticky;
     bottom: 0;
     display: inline-block;
+    padding-top: 0.5em;
+    border-top: 1px solid var(--color-surface);
   }
 </style>

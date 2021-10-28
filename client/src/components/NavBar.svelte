@@ -7,8 +7,8 @@
   <div class="brand">RealChat</div>
   <div class="tools">
     {#if $isLoggedIn}
-      <div class="dimmed">{$user}</div>
-      <span class="sep dimmed">|</span>
+      {$user}
+      <span class="sep">|</span>
       <a href="/" on:click|preventDefault={logout}> Logout </a>
     {/if}
     <ThemeToggle />
@@ -39,9 +39,6 @@
     margin-right: 2em;
   }
 
-  .dimmed {
-    opacity: 0.7;
-  }
   .sep {
     margin: 0 0.5em;
   }
