@@ -1,30 +1,18 @@
 <script lang="ts">
-  import { quintOut } from "svelte/easing";
-  import { crossfade } from "svelte/transition";
+  import { flip } from "svelte/animate";
 
-  export let active: boolean;
-
-  const [send, receive] = crossfade({
-    duration: (d) => Math.sqrt(d * 2000),
-    easing: quintOut,
-  });
+  export let enabled: boolean;
 </script>
 
 <button on:click>
-  {#if active}
+  {#each [true] as state (state)}
     <span
-      class="thumb thumb-left"
-      in:receive={{ key: 0 }}
-      out:send={{ key: 0 }}
+      class={state === enabled ? "thumb thumb-on" : "thumb thumb-off"}
+      animate:flip={{ duration: 200 }}
     />
-  {:else}
-    <span
-      class="thumb thumb-right"
-      in:receive={{ key: 0 }}
-      out:send={{ key: 0 }}
-    />
-  {/if}
-  <slot />
+  {/each}
+  <slot name="icon-off" />
+  <slot name="icon-on" />
 </button>
 
 <style>
@@ -53,11 +41,11 @@
     background: var(--text-on-primary);
   }
 
-  .thumb-left {
-    left: var(--toggle-padding);
+  .thumb-on {
+    right: var(--toggle-padding);
   }
 
-  .thumb-right {
-    right: var(--toggle-padding);
+  .thumb-off {
+    left: var(--toggle-padding);
   }
 </style>
