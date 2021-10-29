@@ -1,5 +1,5 @@
 <script>
-  import { users } from "../stores/messages";
+  import { users } from "../stores/chat";
 
   import List from "./List.svelte";
   import ListItem from "./ListItem.svelte";

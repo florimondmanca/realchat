@@ -5,23 +5,21 @@
   export let message: Message;
 </script>
 
-{#if message.type === "CHAT"}
-  <li class="message" class:message-self={message.data.userName === $user}>
-    <div>
-      <strong class="message-user">
-        {message.data.userName}
-      </strong>
-    </div>
-    <span class="message-body">
-      {message.data.body}
-    </span>
-    <div class="message-time">
-      <small>
-        {new Date(message.timestampSeconds * 1000).toLocaleString()}
-      </small>
-    </div>
-  </li>
-{/if}
+<li class="message" class:message-self={message.userName === $user}>
+  <div>
+    <strong class="message-user">
+      {message.userName}
+    </strong>
+  </div>
+  <span class="message-body">
+    {message.body}
+  </span>
+  <div class="message-time">
+    <small>
+      {new Date(message.timestampSeconds * 1000).toLocaleString()}
+    </small>
+  </div>
+</li>
 
 <style>
   .message {

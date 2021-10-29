@@ -2,24 +2,25 @@
   import { onDestroy, onMount } from "svelte";
   import type { ISendDetail } from "../models/message";
   import { user } from "../stores/auth";
-  import { messages } from "../stores/messages";
+  import { messages } from "../stores/chat";
   import { messageService } from "../services/messages";
   import MessageForm from "../components/MessageForm.svelte";
   import MessageList from "../components/MessageList.svelte";
 
-  let messageListContainer: Element;
+  let historyEl: Element = null;
 
   const scrollChat = () => {
-    messageListContainer.scrollTo({
-      top: messageListContainer.scrollHeight,
-    });
+    if (!historyEl) {
+      return;
+    }
+    historyEl.scrollTo({ top: historyEl.scrollHeight });
   };
 
-  onMount(async () => {
-    await messageService.init($user);
+  onMount(() => {
+    messageService.init($user);
     return messages.subscribe(() => {
       // HACK: Let new message render first.
-      setTimeout(() => scrollChat(), 10);
+      setTimeout(() => scrollChat(), 0);
     });
   });
 
@@ -27,12 +28,12 @@
 
   const onSend = (event: CustomEvent<ISendDetail>) => {
     const { body } = event.detail;
-    messageService.send({ userName: $user, body });
+    messageService.send(body);
   };
 </script>
 
 <div class="box">
-  <div class="history" bind:this={messageListContainer}>
+  <div class="history" bind:this={historyEl}>
     <MessageList messages={$messages} />
   </div>
   <div class="form">

@@ -1,29 +1,10 @@
-interface MessageCommon<D> {
+export interface Message {
   id: number;
-  data: D;
   timestampSeconds: number;
-}
-
-export interface ChatMessage
-  extends MessageCommon<{ userName: string; body: string }> {
-  type: "CHAT";
-}
-
-export interface JoinMessage extends MessageCommon<{ userName: string }> {
-  type: "JOIN";
-}
-
-export interface LeaveMessage extends MessageCommon<{ userName: string }> {
-  type: "LEAVE";
-}
-
-export type Message = ChatMessage | JoinMessage | LeaveMessage;
-
-export interface ISendDetail {
+  userName: string;
   body: string;
 }
 
-export interface IMessagePayload {
-  userName: string;
+export interface ISendDetail {
   body: string;
 }
