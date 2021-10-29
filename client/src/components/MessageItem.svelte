@@ -6,25 +6,29 @@
 </script>
 
 <li class="message" class:message-self={message.userName === $user}>
-  <div>
+  <div class="message-header">
     <strong class="message-user">
       {message.userName}
     </strong>
+    <span class="message-time">
+      <small>
+        {new Date(message.timestampSeconds * 1000).toLocaleString()}
+      </small>
+    </span>
   </div>
-  <span class="message-body">
+  <div class="message-body">
     {message.body}
-  </span>
-  <div class="message-time">
-    <small>
-      {new Date(message.timestampSeconds * 1000).toLocaleString()}
-    </small>
   </div>
 </li>
 
 <style>
+  :root {
+    --br: 0.6em;
+  }
+
   .message {
     background-color: var(--color-surface);
-    border-radius: 0.4em;
+    border-radius: var(--br) var(--br) var(--br) 0;
     padding: 0.6em 1em;
     width: fit-content;
     width: -moz-fit-content;
@@ -33,16 +37,22 @@
     margin-right: auto;
   }
 
+  .message-header {
+    margin-bottom: 0.5em;
+  }
+
   .message-time {
+    font-size: small;
     font-style: italic;
+    white-space: nowrap;
     float: right;
     margin-left: 2em;
-    margin-bottom: -2em;
   }
 
   .message-self {
     background-color: var(--color-primary);
     color: var(--text-on-primary);
+    border-radius: var(--br) var(--br) 0 var(--br);
     margin-left: auto;
     margin-right: 0;
   }

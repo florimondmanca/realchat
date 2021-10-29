@@ -20,7 +20,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1em;
+    padding: 0.5em 1em;
     background-color: var(--color-primary);
     color: var(--text-on-primary);
   }
