@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
+	Host string
 	Port int
-	Addr string
 }
 
 func NewConfig() *Config {
@@ -20,10 +20,12 @@ func NewConfig() *Config {
 		port = 8000
 	}
 
-	addr := fmt.Sprintf("%s:%d", hostName, port)
-
 	return &Config{
+		hostName,
 		port,
-		addr,
 	}
+}
+
+func (c *Config) Addr() string {
+	return fmt.Sprintf("%s:%d", c.Host, c.Port)
 }

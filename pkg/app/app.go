@@ -5,40 +5,38 @@ import (
 	"log"
 	"net/http"
 	"time"
-
-	socketio "github.com/googollee/go-socket.io"
 )
 
 type App struct {
 	config *Config
 	http   *http.Server
-	chat   *socketio.Server
+	server *Server
 }
 
 func NewApp(config *Config) *App {
-	return &App{config, nil, nil}
+	server := NewChatServer()
+
+	mux := http.NewServeMux()
+	mux.Handle("/socket.io/", server.Handler())
+	srv := &http.Server{Addr: config.Addr(), Handler: mux}
+
+	return &App{config, srv, server}
 }
 
 func (app *App) Start() {
-	app.chat = NewChatServer()
-
-	mux := http.NewServeMux()
-	mux.Handle("/socket.io/", app.chat)
-	app.http = &http.Server{Addr: app.config.Addr, Handler: mux}
-
 	go func() {
 		if err := app.http.ListenAndServe(); err != nil {
 			log.Printf("listen: %s\n", err)
 		}
 	}()
 
-	go app.chat.Serve()
+	app.server.Start()
 
-	log.Printf("listening on %s", app.config.Addr)
+	log.Printf("listening on %s", app.config.Addr())
 }
 
 func (app *App) Stop() {
-	app.chat.Close()
+	app.server.Stop()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

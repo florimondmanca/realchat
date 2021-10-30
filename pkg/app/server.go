@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -15,82 +16,136 @@ import (
 var messageID = 0
 
 type Message struct {
-	id               int
-	timestampSeconds int64
-	userName         string
-	body             string
+	Id               int    `json:"id"`
+	TimestampSeconds int64  `json:"timestampSeconds"`
+	UserName         string `json:"userName"`
+	Body             string `json:"body"`
 }
 
-func NewChatServer() *socketio.Server {
+type Clock interface {
+	Now() int64
+}
+
+type DefaultClock struct {
+	Clock
+}
+
+func (c *DefaultClock) Now() int64 {
+	return time.Now().Unix()
+}
+
+type Server struct {
+	sio          *socketio.Server
+	pastMessages []*Message
+	users        map[string]string
+	Clock        Clock
+}
+
+var (
+	defaultClock = &DefaultClock{}
+)
+
+func NewChatServer() *Server {
+	server := &Server{
+		sio:          nil,
+		pastMessages: []*Message{},
+		users:        map[string]string{},
+		Clock:        defaultClock,
+	}
+	server.sio = server.createSocketIO()
+	return server
+}
+
+func (s *Server) Handler() http.Handler {
+	return s.sio
+}
+
+func (s *Server) Start() {
+	go s.sio.Serve()
+}
+
+func (s *Server) Stop() {
+	s.sio.Close()
+}
+
+func (s *Server) createSocketIO() *socketio.Server {
 	// CORS: allow all, as we are running locally.
 	allowAllOrigins := func(r *http.Request) bool { return true }
 
-	server := socketio.NewServer(&engineio.Options{
+	sio := socketio.NewServer(&engineio.Options{
 		Transports: []transport.Transport{
 			&polling.Transport{CheckOrigin: allowAllOrigins},
 			&websocket.Transport{CheckOrigin: allowAllOrigins},
 		},
 	})
 
-	users := map[string]string{}
-	pastMessages := []*Message{}
-
-	sendConnectedUsers := func(s socketio.Conn) {
-		for _, userName := range users {
-			s.Emit("join", userName)
-		}
-	}
-
-	sendPastMessages := func(s socketio.Conn) {
-		for _, msg := range pastMessages {
-			s.Emit("msg", msg.id, msg.timestampSeconds, msg.userName, msg.body)
-		}
-	}
-
-	server.OnConnect("/", func(s socketio.Conn) error {
-		fmt.Println("--> connected:", s.ID())
-		s.Join("chat")
+	sio.OnConnect("/", func(conn socketio.Conn) error {
+		log.Println("--> connected:", conn.ID())
+		conn.Join("chat")
 		return nil
 	})
 
-	server.OnEvent("/", "join", func(s socketio.Conn, userName string) {
-		fmt.Println("--> join:", userName)
-		sendConnectedUsers(s)
-		sendPastMessages(s)
-		users[s.ID()] = userName
-		server.BroadcastToRoom("/", "chat", "join", userName)
+	sio.OnEvent("/", "join", func(conn socketio.Conn, userName string, channel string) {
+		log.Println("--> join:", userName, channel)
+		conn.Join(getRoom(channel))
+		s.sendHistory(conn)
+		s.addUser(conn.ID(), userName)
+		sio.BroadcastToRoom("/", "chat", "join", userName)
 	})
 
-	server.OnEvent("/", "msg", func(s socketio.Conn, body string) {
-		messageID++
-
-		id := messageID
-		timestampSeconds := time.Now().Unix()
-		userName := users[s.ID()]
-
-		msg := &Message{
-			id,
-			timestampSeconds,
-			userName,
-			body,
-		}
-		pastMessages = append(pastMessages, msg)
-		fmt.Println("--> msg:", msg)
-
-		server.BroadcastToRoom("/", "chat", "msg", id, timestampSeconds, userName, body)
+	sio.OnEvent("/", "msg", func(conn socketio.Conn, body string) {
+		msg := s.makeMessage(conn.ID(), body)
+		log.Println("--> msg:", msg)
+		s.pastMessages = append(s.pastMessages, msg)
+		sio.BroadcastToRoom("/", "chat", "msg", msg.Id, msg.TimestampSeconds, msg.UserName, msg.Body)
 	})
 
-	server.OnError("/", func(s socketio.Conn, err error) {
-		fmt.Println(fmt.Errorf("error: %v", err))
+	sio.OnError("/", func(_ socketio.Conn, err error) {
+		log.Println(fmt.Errorf("error: %v", err))
 	})
 
-	server.OnDisconnect("/", func(s socketio.Conn, reason string) {
-		fmt.Println("--> closed:", reason)
-		s.Leave("chat")
-		userName := users[s.ID()]
-		delete(users, s.ID())
-		server.BroadcastToRoom("/", "chat", "leave", userName)
+	sio.OnDisconnect("/", func(conn socketio.Conn, reason string) {
+		conn.Leave("chat")
+		userName := s.popUser(conn.ID())
+		log.Println("--> leave:", userName)
+		sio.BroadcastToRoom("/", "chat", "leave", userName)
 	})
 
-	return server
+	return sio
+}
+
+func (s *Server) addUser(id string, userName string) {
+	s.users[id] = userName
+}
+
+func (s *Server) getUser(id string) string {
+	return s.users[id]
+}
+
+func (s *Server) popUser(id string) string {
+	userName := s.users[id]
+	delete(s.users, id)
+	return userName
+}
+
+func (s *Server) makeMessage(userId string, body string) *Message {
+	messageID++
+	id := messageID
+	timestampSeconds := s.Clock.Now()
+	userName := s.getUser(userId)
+	return &Message{id, timestampSeconds, userName, body}
+}
+
+func (s *Server) sendHistory(conn socketio.Conn) {
+	for _, userName := range s.users {
+		conn.Emit("join", userName)
+	}
+
+	for _, msg := range s.pastMessages {
+		conn.Emit("msg", msg.Id, msg.TimestampSeconds, msg.UserName, msg.Body)
+	}
+}
+
+func getRoom(channel string) string {
+	return fmt.Sprintf("channel.%s", channel)
 }

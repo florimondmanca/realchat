@@ -1,6 +1,7 @@
 .PHONY: client
 
 INPUT=cmd/server/main.go
+TEST_INPUT=./pkg/app
 OUTPUT=cmd/server/main.out
 YARN=yarn --cwd client
 
@@ -21,7 +22,7 @@ build:
 	make build-client
 
 test:
-	go test -v ${INPUT}
+	go test -v ${TEST_INPUT}
 
 serve:
 	make build-server
